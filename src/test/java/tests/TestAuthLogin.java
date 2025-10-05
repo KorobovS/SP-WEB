@@ -3,23 +3,50 @@ package tests;
 import io.qameta.allure.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.DashboardPage;
 import pages.LoginPage;
 import utils.BaseTest;
+import utils.LoggerUtil;
 
-//public class TestAuthLogin extends BaseTest {
-public class TestAuthLogin {
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
+
+public class TestAuthLogin extends BaseTest {
 
     @Test
     private void firstTest() {
         String baseUrl = System.getenv("BASE_URL");
+        WebDriver driver;
+
         System.out.println(baseUrl);
 
-//        WebDriver driver = new ChromeDriver();
-//        driver.get(baseUrl);
-//        driver.quit();
+        if (baseUrl != null) {
+            LoggerUtil.info(String.format("BASE_URL = %s", baseUrl));
+
+            ChromeOptions chromeOptions = new ChromeOptions();
+            Allure.addAttachment("RemoteUrl", baseUrl);
+            chromeOptions.addArguments("--headless");
+            chromeOptions.addArguments("--disable-gpu");
+            chromeOptions.addArguments("--no-sandbox");
+            chromeOptions.addArguments("--disable-dev-shm-usage");
+            chromeOptions.addArguments("--window-size=1440,1080");
+            chromeOptions.setCapability("goog:loggingPrefs", Map.of("browser", "ALL"));
+            try {
+                driver = new RemoteWebDriver(new URL(baseUrl), chromeOptions);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("Malformed URL for Selenium Remote WebDriver", e);
+            }
+        } else {
+            driver = new ChromeDriver();
+            baseUrl = "https://www.google.com/";
+        }
+        driver.get(baseUrl);
+        driver.quit();
     }
 
 //    @Test
