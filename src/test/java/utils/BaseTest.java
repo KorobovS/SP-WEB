@@ -50,11 +50,13 @@ public abstract class BaseTest {
         LoggerUtil.info("Driver NULL");
     }
 
-    @Parameters("browser")
+//    @Parameters("browser")
     @BeforeMethod
-    protected void beforeMethod(Method method, @Optional("yandex") String browser) {
+//    protected void beforeMethod(Method method, @Optional("yandex") String browser) {
+    protected void beforeMethod(Method method, String browser) {
 
         String baseUrl = System.getenv("BASE_URL");
+        System.out.println(baseUrl);
 
         if (baseUrl != null) {
             LoggerUtil.info(String.format("BASE_URL = %s", baseUrl));
