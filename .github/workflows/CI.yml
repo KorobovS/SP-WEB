@@ -41,7 +41,7 @@ jobs:
         env:
           SELENIUM_REMOTE_URL: ''
           SELENIUM_BROWSER: chrome
-          TEST_BASE_URL: ${{ BASE_URL }}
+          TEST_BASE_URL: ${{ secrets.BASE_URL }}
 
       - name: Upload test reports
         uses: actions/upload-artifact@v4
