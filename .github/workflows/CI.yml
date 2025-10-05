@@ -40,7 +40,7 @@ jobs:
 
       - name: Create config file
         run: |
-          cat << EOF > src/main/resources/demo.properties
+          cat src/main/resources/demo.properties
           app.baseUrl=${{ secrets.BASE_URL }}
           app.userName=${{ secrets.USER_NAME }}
           app.password=${{ secrets.PASSWORD }}
