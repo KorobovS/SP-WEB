@@ -1,68 +1,53 @@
-name: Java CI with Maven
+name: Selenium Tests
 
 on:
-  workflow_dispatch:
-  pull_request:
-    branches:
-      - main
   push:
-    branches:
-      - main
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  build:
-    name: 'Run tests'
+  selenium-tests:
+    name: Run Selenium Tests
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pages: write
-
-    services:
-      selenium:
-        image: selenium/standalone-chrome:latest
-        options: --shm-size 2g
-        ports:
-          - 4444:4444
 
     steps:
-      - name: Git clone
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup JDK 17
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'corretto'
-          cache: 'maven'
+          distribution: 'temurin'
+          cache: maven
 
-      - name: Maven test
-        env:
-          BASE_URL: ${{ secrets.BASE_URL }}
-        run: mvn clean test
-
-      - name: Get Allure history
-        uses: actions/checkout@v4
-        if: always()
-        continue-on-error: true
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
         with:
-          ref: gh-pages
-          path: gh-pages
+          chrome-version: stable
 
-      - name: Build Allure report
-        uses: simple-elf/allure-report-action@master
-        if: always()
-        id: allure-report
-        with:
-          allure_results: target/allure-results
-          gh_pages: gh-pages
-          allure_report: allure-report
-          allure_history: allure-history
-          keep_reports: 100
+      - name: Verify Chrome installation
+        run: |
+          chrome_version=$(google-chrome --version)
+          echo "Chrome version: $chrome_version"
 
-      - name: Publish Allure report to Github Pages
-        if: ${{ success() || failure() }}
-        uses: peaceiris/actions-gh-pages@v2
+      - name: Set up display for headless Chrome
+        run: |
+          echo "Setting up virtual display for Selenium"
+
+      - name: Run Selenium Tests with Maven
+        run: mvn test -Dtest=*Selenium* -Dselenium.browser=chrome -Dselenium.headless=true
         env:
-          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: allure-history
+          SELENIUM_REMOTE_URL: ''
+          SELENIUM_BROWSER: chrome
+          TEST_BASE_URL: ${{ BASE_URL }}
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports
+          path: |
+            target/surefire-reports/
+            target/site/surefire-report.html

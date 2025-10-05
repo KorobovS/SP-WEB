@@ -1,52 +1,41 @@
 package tests;
 
 import io.qameta.allure.*;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.DashboardPage;
 import pages.LoginPage;
 import utils.BaseTest;
-import utils.LoggerUtil;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Map;
 
 public class TestAuthLogin extends BaseTest {
 
     @Test
-    private void firstTest() {
-        String baseUrl = System.getenv("BASE_URL");
-        WebDriver driver;
+    void testSuccessfulLogin() {
+        driver.get(baseUrl + "/login");
 
-        System.out.println(baseUrl);
+        WebElement username = driver.findElement(By.id("username"));
+        WebElement password = driver.findElement(By.id("password"));
+        WebElement loginButton = driver.findElement(By.id("login-btn"));
 
-        if (baseUrl != null) {
-            LoggerUtil.info(String.format("BASE_URL = %s", baseUrl));
+        username.sendKeys("testuser");
+        password.sendKeys("password");
+        loginButton.click();
 
-            ChromeOptions chromeOptions = new ChromeOptions();
-            Allure.addAttachment("RemoteUrl", baseUrl);
-            chromeOptions.addArguments("--headless");
-            chromeOptions.addArguments("--disable-gpu");
-            chromeOptions.addArguments("--no-sandbox");
-            chromeOptions.addArguments("--disable-dev-shm-usage");
-            chromeOptions.addArguments("--window-size=1440,1080");
-            chromeOptions.setCapability("goog:loggingPrefs", Map.of("browser", "ALL"));
-            try {
-                driver = new RemoteWebDriver(new URL(baseUrl), chromeOptions);
-            } catch (MalformedURLException e) {
-                throw new RuntimeException("Malformed URL for Selenium Remote WebDriver", e);
-            }
-        } else {
-            driver = new ChromeDriver();
-            baseUrl = "https://www.google.com/";
+        WebElement welcomeMessage = driver.findElement(By.id("welcome"));
+        Assert.assertTrue(welcomeMessage.isDisplayed());
+    }
+
+    @Test
+    void testLoginFailure() {
+        driver.get(baseUrl + "/login");
+
+        // ... test code
+
+        if (driver.findElements(By.className("error")).size() > 0) {
+            takeScreenshot("testLoginFailure");
         }
-        driver.get(baseUrl);
-        driver.quit();
     }
 
 //    @Test
