@@ -17,9 +17,9 @@ public class TestAuthLogin {
         String baseUrl = System.getenv("BASE_URL");
         System.out.println(baseUrl);
 
-//        WebDriver driver = new ChromeDriver();
-//        driver.get(baseUrl);
-//        driver.quit();
+        WebDriver driver = new ChromeDriver();
+        driver.get(baseUrl);
+        driver.quit();
     }
 
 //    @Test
