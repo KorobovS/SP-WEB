@@ -50,28 +50,25 @@ public abstract class BaseTest {
         LoggerUtil.info("Driver NULL");
     }
 
-//    @Parameters("browser")
-//    @BeforeMethod
-//    protected void beforeMethod(Method method, @Optional("yandex") String browser) {
-    protected void beforeMethod(Method method, String browser) {
+    @Parameters("browser")
+    @BeforeMethod
+    protected void beforeMethod(Method method, @Optional("yandex") String browser) {
 
-        String baseUrl = System.getenv("BASE_URL");
+        String remoteUrl = System.getenv("SELENIUM_REMOTE_URL");
 
-        System.out.println(baseUrl);
-
-        if (baseUrl != null) {
-            LoggerUtil.info(String.format("BASE_URL = %s", baseUrl));
+        if (remoteUrl != null) {
+            LoggerUtil.info(String.format("SELENIUM_REMOTE_URL = %s", remoteUrl));
 
             ChromeOptions chromeOptions = new ChromeOptions();
-            Allure.addAttachment("RemoteUrl", baseUrl);
+            Allure.addAttachment("RemoteUrl", remoteUrl);
             chromeOptions.addArguments("--headless");
             chromeOptions.addArguments("--disable-gpu");
             chromeOptions.addArguments("--no-sandbox");
             chromeOptions.addArguments("--disable-dev-shm-usage");
-            chromeOptions.addArguments("--window-size=1440,1080");
+            chromeOptions.addArguments("--window-size=1920,1080");
             chromeOptions.setCapability("goog:loggingPrefs", Map.of("browser", "ALL"));
             try {
-                driver = new RemoteWebDriver(new URL(baseUrl), chromeOptions);
+                driver = new RemoteWebDriver(new URL(remoteUrl), chromeOptions);
             } catch (MalformedURLException e) {
                 throw new RuntimeException("Malformed URL for Selenium Remote WebDriver", e);
             }
