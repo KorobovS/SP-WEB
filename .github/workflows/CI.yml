@@ -37,7 +37,7 @@ jobs:
 
       - name: Maven test
         env:
-          SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
+          BASE_URL: ${{ secrets.BASE_URL }}
         run: mvn clean test
 
       - name: Get Allure history
