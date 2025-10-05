@@ -56,6 +56,7 @@ public abstract class BaseTest {
     protected void beforeMethod(Method method, String browser) {
 
         String baseUrl = System.getenv("BASE_URL");
+
         System.out.println(baseUrl);
 
         if (baseUrl != null) {
