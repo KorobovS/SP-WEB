@@ -38,13 +38,6 @@ jobs:
           CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
           echo "Chrome version: $CHROME_VERSION"
 
-      - name: Create config file
-        run: |
-          cat src/main/resources/demo.properties
-          app.baseUrl=${{ secrets.BASE_URL }}
-          app.userName=${{ secrets.USER_NAME }}
-          app.password=${{ secrets.PASSWORD }}
-
       - name: Run Maven Tests
         run: |
           mvn clean test \
