@@ -2,13 +2,10 @@ name: Selenium Tests
 
 on:
   push:
-    branches: [ main, develop ]
-  pull_request:
     branches: [ main ]
 
 jobs:
   selenium-tests:
-    name: Run Selenium Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -22,32 +19,34 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Setup Chrome
+      - name: Install Chrome
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: stable
 
-      - name: Verify Chrome installation
+      - name: Install ChromeDriver
         run: |
-          chrome_version=$(google-chrome --version)
-          echo "Chrome version: $chrome_version"
+          CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          echo "Chrome version: $CHROME_VERSION"
 
-      - name: Set up display for headless Chrome
+      - name: Run Maven Tests
         run: |
-          echo "Setting up virtual display for Selenium"
-
-      - name: Run Selenium Tests with Maven
-        run: mvn test -Dtest=*Selenium* -Dselenium.browser=chrome -Dselenium.headless=true
+          mvn clean test \
+            -Dselenium.browser=chrome \
+            -Dselenium.headless=true \
+            -Dbrowser=headless \
+            -DskipTests=false \
+            -Dmaven.test.failure.ignore=false \
+            -Dsurefire.failIfNoSpecifiedTests=false
         env:
-          SELENIUM_REMOTE_URL: ''
-          SELENIUM_BROWSER: chrome
-          TEST_BASE_URL: ${{ BASE_URL }}
+          TEST_URL: http://localhost:8080
+          HEADLESS: "true"
 
-      - name: Upload test reports
+      - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-reports
+          name: test-results
           path: |
             target/surefire-reports/
-            target/site/surefire-report.html
+            target/screenshots/
