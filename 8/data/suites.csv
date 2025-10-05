@@ -1,0 +1,2 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","8","firstTest","Surefire suite","Sun Oct 05 17:58:32 UTC 2025","passed","Sun Oct 05 17:58:32 UTC 2025","tests.TestAuthLogin","Surefire test","tests.TestAuthLogin","firstTest"
