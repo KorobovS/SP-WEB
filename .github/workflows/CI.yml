@@ -51,15 +51,6 @@ jobs:
           TEST_URL: http://localhost:8080
           HEADLESS: "true"
 
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-results
-          path: |
-            target/surefire-reports/
-            target/screenshots/
-
       - name: Get Allure history
         uses: actions/checkout@v4
         if: always()

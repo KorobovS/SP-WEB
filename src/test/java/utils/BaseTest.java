@@ -54,26 +54,7 @@ public abstract class BaseTest {
     @BeforeMethod
     protected void beforeMethod(Method method, @Optional("yandex") String browser) {
 
-        String remoteUrl = System.getenv("SELENIUM_REMOTE_URL");
-
-        if (remoteUrl != null) {
-            LoggerUtil.info(String.format("SELENIUM_REMOTE_URL = %s", remoteUrl));
-
-            ChromeOptions chromeOptions = new ChromeOptions();
-            Allure.addAttachment("RemoteUrl", remoteUrl);
-            chromeOptions.addArguments("--headless");
-            chromeOptions.addArguments("--disable-gpu");
-            chromeOptions.addArguments("--no-sandbox");
-            chromeOptions.addArguments("--disable-dev-shm-usage");
-            chromeOptions.addArguments("--window-size=1920,1080");
-            chromeOptions.setCapability("goog:loggingPrefs", Map.of("browser", "ALL"));
-            try {
-                driver = new RemoteWebDriver(new URL(remoteUrl), chromeOptions);
-            } catch (MalformedURLException e) {
-                throw new RuntimeException("Malformed URL for Selenium Remote WebDriver", e);
-            }
-        } else {
-            LoggerUtil.info("Local run");
+                    LoggerUtil.info("Local run");
 
             switch (browser.toLowerCase()) {
                 case "chrome":
@@ -92,7 +73,6 @@ public abstract class BaseTest {
                 default:
                     throw new IllegalArgumentException("Unsupported browser: " + browser);
             }
-        }
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().setSize(new Dimension(1440, 1080));
