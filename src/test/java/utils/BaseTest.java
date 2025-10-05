@@ -51,7 +51,7 @@ public abstract class BaseTest {
     }
 
 //    @Parameters("browser")
-    @BeforeMethod
+//    @BeforeMethod
 //    protected void beforeMethod(Method method, @Optional("yandex") String browser) {
     protected void beforeMethod(Method method, String browser) {
 
