@@ -38,7 +38,7 @@ jobs:
       - name: Maven test
         env:
           SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
-        run: mvn clean test
+        run: mvn clean test -Dbrowser=chrome
 
       - name: Get Allure history
         uses: actions/checkout@v4
