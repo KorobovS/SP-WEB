@@ -1,7 +1,10 @@
 package utils;
 
 import io.qameta.allure.Allure;
-import org.openqa.selenium.*;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -54,7 +57,25 @@ public abstract class BaseTest {
     @BeforeMethod
     protected void beforeMethod(Method method, @Optional("yandex") String browser) {
 
-                    LoggerUtil.info("Local run");
+        ChromeOptions options = new ChromeOptions();
+        String remoteUrl = System.getenv("SELENIUM_REMOTE_URL");
+
+        if (remoteUrl != null) {
+            LoggerUtil.info(String.format("SELENIUM_REMOTE_URL = %s", remoteUrl));
+            Allure.addAttachment("RemoteUrl", remoteUrl);
+            options.addArguments("--headless");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.setCapability("goog:loggingPrefs", Map.of("browser", "ALL"));
+            try {
+                driver = new RemoteWebDriver(new URL(remoteUrl), options);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("Malformed URL for Selenium Remote WebDriver", e);
+            }
+        } else {
+
+            LoggerUtil.info("Local run");
 
             switch (browser.toLowerCase()) {
                 case "chrome":
@@ -65,20 +86,26 @@ public abstract class BaseTest {
                     break;
                 case "yandex":
                     System.setProperty("webdriver.chrome.driver", "driver/yandexdriver-25.8.0.1872-win64/yandexdriver.exe");
-                    ChromeOptions options = new ChromeOptions();
+                    options.addArguments("--disable-extensions");
                     options.addArguments("--disable-notifications");
+                    options.addArguments("--disable-gpu");
+                    options.addArguments("--no-sandbox");
+                    options.addArguments("--disable-dev-shm-usage");
                     options.addArguments("--remote-allow-origins=*");
                     driver = new ChromeDriver(options);
                     break;
                 default:
                     throw new IllegalArgumentException("Unsupported browser: " + browser);
             }
+        }
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+
         driver.manage().window().setSize(new Dimension(1440, 1080));
         LoggerUtil.info(String.format("Open browser: %s", browser));
 
-        driver.get("https://web.staging.diatechnic.ru");
+        driver.get(config.getBaseUrl());
 
         LoggerUtil.info(String.format("Run %s.%s", this.getClass().getName(), method.getName()));
     }
