@@ -1,0 +1,1 @@
+[{"uid":"cd71edd872c3c23f","name":"testEnteredDataSavedFieldValue","time":{"start":1759870824029,"stop":1759870824570,"duration":541},"status":"passed","severity":"normal"},{"uid":"f25e6fb557d87de6","name":"testLoginWithEmptyUsernameAndPassword","time":{"start":1759870832263,"stop":1759870832587,"duration":324},"status":"passed","severity":"blocker"}]

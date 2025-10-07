@@ -1,0 +1,3 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","324","testLoginWithEmptyUsernameAndPassword","Тестирование в единственном браузере","Tue Oct 07 21:00:32 UTC 2025","passed","Tue Oct 07 21:00:32 UTC 2025","tests.TestAuthLogin","Браузер","tests.TestAuthLogin","testLoginWithEmptyUsernameAndPassword"
+"","541","testEnteredDataSavedFieldValue","Тестирование в единственном браузере","Tue Oct 07 21:00:24 UTC 2025","passed","Tue Oct 07 21:00:24 UTC 2025","tests.TestAuthLogin","Браузер","tests.TestAuthLogin","testEnteredDataSavedFieldValue"
