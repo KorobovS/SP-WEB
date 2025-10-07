@@ -35,7 +35,7 @@ jobs:
           distribution: 'corretto'
           cache: 'maven'
 
-      - name: Create properties file
+      - name: Create demo.properties file
         run: |
           mkdir -p src/test/resources
           cat > src/test/resources/demo.properties << EOF
