@@ -15,7 +15,7 @@ public class ProjectUtils {
 
     public static WebDriver createDriver() {
 
-        TestConfig config = new TestConfig();
+//        TestConfig config = new TestConfig();
         ChromeOptions chromeOptions = new ChromeOptions();
         WebDriver driver;
         String remoteUrl = System.getenv("SELENIUM_REMOTE_URL");
