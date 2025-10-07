@@ -47,7 +47,7 @@ jobs:
         env:
           SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
           BASE_URL: ${{ secrets.BASE_URL }}
-        run: mvn clean test -Dbrowser=chrome
+        run: mvn clean test -Dsiute=all
 
       - name: Get Allure history
         uses: actions/checkout@v4
