@@ -20,6 +20,7 @@ public class ProjectUtils {
         WebDriver driver;
         String remoteUrl = System.getenv("SELENIUM_REMOTE_URL");
         String url = System.getenv("BASE_URL");
+        System.out.println(url);
 
         if (remoteUrl != null) {
             LoggerUtil.info(String.format("SELENIUM_REMOTE_URL = %s", remoteUrl));
