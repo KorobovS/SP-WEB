@@ -39,6 +39,56 @@ public abstract class BaseTest {
         return config;
     }
 
+
+    public static WebDriver createDriver(String browser) {
+
+        ChromeOptions chromeOptions = new ChromeOptions();
+        WebDriver driver;
+        String remoteUrl = System.getenv("SELENIUM_REMOTE_URL");
+
+        if (remoteUrl != null) {
+            LoggerUtil.info(String.format("SELENIUM_REMOTE_URL = %s", remoteUrl));
+            Allure.addAttachment("RemoteUrl", remoteUrl);
+            chromeOptions.addArguments("--headless");
+            chromeOptions.addArguments("--disable-gpu");
+            chromeOptions.addArguments("--no-sandbox");
+            chromeOptions.addArguments("--disable-dev-shm-usage");
+            chromeOptions.addArguments("--window-size=1920,1080");
+            chromeOptions.setCapability("goog:loggingPrefs", Map.of("browser", "ALL"));
+            try {
+                driver = new RemoteWebDriver(new URL(remoteUrl), chromeOptions);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("Malformed URL for Selenium Remote WebDriver", e);
+            }
+        } else {
+            LoggerUtil.info("Local run");
+
+            switch (browser.toLowerCase()) {
+                case "chrome":
+                    driver = new ChromeDriver();
+                    break;
+                case "edge":
+                    driver = new EdgeDriver();
+                    break;
+                case "yandex":
+                    System.setProperty("webdriver.chrome.driver", "driver/yandexdriver-25.8.0.1872-win64/yandexdriver.exe");
+                    chromeOptions.addArguments("--disable-extensions");
+                    chromeOptions.addArguments("--disable-notifications");
+                    chromeOptions.addArguments("--disable-gpu");
+                    chromeOptions.addArguments("--no-sandbox");
+                    chromeOptions.addArguments("--disable-dev-shm-usage");
+                    chromeOptions.addArguments("--remote-allow-origins=*");
+                    driver = new ChromeDriver(chromeOptions);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unsupported browser: " + browser);
+            }
+            LoggerUtil.info(String.format("Open browser: %s", browser));
+        }
+
+        return driver;
+    }
+
     private void closeDriver() {
 
         if (driver != null) {
@@ -54,55 +104,12 @@ public abstract class BaseTest {
     @BeforeMethod
     protected void beforeMethod(Method method, @Optional("yandex") String browser) {
 
-        getDriver();
-
-        ChromeOptions options = new ChromeOptions();
-        String remoteUrl = System.getenv("SELENIUM_REMOTE_URL");
-
-//        if (remoteUrl != null) {
-            LoggerUtil.info(String.format("SELENIUM_REMOTE_URL = %s", remoteUrl));
-            Allure.addAttachment("RemoteUrl", remoteUrl);
-            options.addArguments("--headless");
-            options.addArguments("--disable-gpu");
-            options.addArguments("--no-sandbox");
-            options.addArguments("--disable-dev-shm-usage");
-            options.setCapability("goog:loggingPrefs", Map.of("browser", "ALL"));
-            try {
-                driver = new RemoteWebDriver(new URL(remoteUrl), options);
-            } catch (MalformedURLException e) {
-                throw new RuntimeException("Malformed URL for Selenium Remote WebDriver", e);
-            }
-//        } else {
-
-//            LoggerUtil.info("Local run");
-//
-//            switch (browser.toLowerCase()) {
-//                case "chrome":
-//                    driver = new ChromeDriver();
-//                    break;
-//                case "edge":
-//                    driver = new EdgeDriver();
-//                    break;
-//                case "yandex":
-//                    System.setProperty("webdriver.chrome.driver", "driver/yandexdriver-25.8.0.1872-win64/yandexdriver.exe");
-//                    options.addArguments("--disable-extensions");
-//                    options.addArguments("--disable-notifications");
-//                    options.addArguments("--disable-gpu");
-//                    options.addArguments("--no-sandbox");
-//                    options.addArguments("--disable-dev-shm-usage");
-//                    options.addArguments("--remote-allow-origins=*");
-//                    driver = new ChromeDriver(options);
-//                    break;
-//                default:
-//                    throw new IllegalArgumentException("Unsupported browser: " + browser);
-//            }
-//        }
+        driver = createDriver(browser);
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
 
         driver.manage().window().setSize(new Dimension(1440, 1080));
-        LoggerUtil.info(String.format("Open browser: %s", browser));
 
         driver.get(config.getBaseUrl());
 
