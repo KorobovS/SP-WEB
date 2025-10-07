@@ -105,12 +105,12 @@ public abstract class BaseTest {
     protected void beforeMethod(Method method, @Optional("yandex") String browser) {
         startDriver();
 
-//        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-//        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-//
-//        driver.manage().window().setSize(new Dimension(1440, 1080));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
 
+        driver.manage().window().setSize(new Dimension(1440, 1080));
 
+        driver.get(new TestConfig().getBaseUrl());
 
         LoggerUtil.info(String.format("Run %s.%s", this.getClass().getName(), method.getName()));
     }

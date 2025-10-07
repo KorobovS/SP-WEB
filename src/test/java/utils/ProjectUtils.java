@@ -15,12 +15,9 @@ public class ProjectUtils {
 
     public static WebDriver createDriver() {
 
-//        TestConfig config = new TestConfig();
         ChromeOptions chromeOptions = new ChromeOptions();
         WebDriver driver;
         String remoteUrl = System.getenv("SELENIUM_REMOTE_URL");
-        String url = System.getenv("BASE_URL");
-        System.out.println(url);
 
         if (remoteUrl != null) {
             LoggerUtil.info(String.format("SELENIUM_REMOTE_URL = %s", remoteUrl));
@@ -36,13 +33,12 @@ public class ProjectUtils {
             } catch (MalformedURLException e) {
                 throw new RuntimeException("Malformed URL for Selenium Remote WebDriver", e);
             }
-            driver.get(url);
         } else {
             LoggerUtil.info("Local run");
             Allure.addAttachment("Local run", "No remote driver");
             chromeOptions.addArguments("--window-size=1920,1080");
             driver = new ChromeDriver(chromeOptions);
-//            driver.get(config.getBaseUrl());
+            driver.get(new TestConfig().getBaseUrl());
         }
 
         return driver;

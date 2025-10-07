@@ -17,8 +17,13 @@ public class TestConfig {
     }
 
     public String getBaseUrl() {
-        String baseUrl = properties.getProperty("baseUrl");
-        assertNotNull(baseUrl, String.format("BaseUrl is not found in %s.properties", env));
+        String baseUrl = System.getenv("BASE_URL");
+
+        if (baseUrl != null) {
+            String url = properties.getProperty("baseUrl");
+            assertNotNull(baseUrl, String.format("BaseUrl is not found in %s.properties", env));
+            baseUrl = url;
+        }
 
         LoggerUtil.info(String.format("Received baseUrl for the environment: %s", env));
 
