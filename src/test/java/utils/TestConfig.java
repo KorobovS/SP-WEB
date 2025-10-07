@@ -9,12 +9,12 @@ public class TestConfig {
     String env;
     Properties properties;
 
-    public TestConfig() {
-        env = System.getProperty("env", "demo");
-        properties = getPropertiesByEnv(env);
-
-        LoggerUtil.info(String.format("The environment has been launched: %s", env));
-    }
+//    public TestConfig() {
+//        env = System.getProperty("env", "demo");
+//        properties = getPropertiesByEnv(env);
+//
+//        LoggerUtil.info(String.format("The environment has been launched: %s", env));
+//    }
 
     public String getBaseUrl() {
         String baseUrl = System.getenv("BASE_URL");
