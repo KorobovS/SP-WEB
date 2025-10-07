@@ -57,7 +57,7 @@ public abstract class BaseTest {
         ChromeOptions options = new ChromeOptions();
         String remoteUrl = System.getenv("SELENIUM_REMOTE_URL");
 
-        if (remoteUrl != null) {
+//        if (remoteUrl != null) {
             LoggerUtil.info(String.format("SELENIUM_REMOTE_URL = %s", remoteUrl));
             Allure.addAttachment("RemoteUrl", remoteUrl);
             options.addArguments("--headless");
@@ -65,37 +65,36 @@ public abstract class BaseTest {
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
             options.setCapability("goog:loggingPrefs", Map.of("browser", "ALL"));
-            options.setPageLoadStrategy(PageLoadStrategy.EAGER);
             try {
                 driver = new RemoteWebDriver(new URL(remoteUrl), options);
             } catch (MalformedURLException e) {
                 throw new RuntimeException("Malformed URL for Selenium Remote WebDriver", e);
             }
-        } else {
+//        } else {
 
-            LoggerUtil.info("Local run");
-
-            switch (browser.toLowerCase()) {
-                case "chrome":
-                    driver = new ChromeDriver();
-                    break;
-                case "edge":
-                    driver = new EdgeDriver();
-                    break;
-                case "yandex":
-                    System.setProperty("webdriver.chrome.driver", "driver/yandexdriver-25.8.0.1872-win64/yandexdriver.exe");
-                    options.addArguments("--disable-extensions");
-                    options.addArguments("--disable-notifications");
-                    options.addArguments("--disable-gpu");
-                    options.addArguments("--no-sandbox");
-                    options.addArguments("--disable-dev-shm-usage");
-                    options.addArguments("--remote-allow-origins=*");
-                    driver = new ChromeDriver(options);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported browser: " + browser);
-            }
-        }
+//            LoggerUtil.info("Local run");
+//
+//            switch (browser.toLowerCase()) {
+//                case "chrome":
+//                    driver = new ChromeDriver();
+//                    break;
+//                case "edge":
+//                    driver = new EdgeDriver();
+//                    break;
+//                case "yandex":
+//                    System.setProperty("webdriver.chrome.driver", "driver/yandexdriver-25.8.0.1872-win64/yandexdriver.exe");
+//                    options.addArguments("--disable-extensions");
+//                    options.addArguments("--disable-notifications");
+//                    options.addArguments("--disable-gpu");
+//                    options.addArguments("--no-sandbox");
+//                    options.addArguments("--disable-dev-shm-usage");
+//                    options.addArguments("--remote-allow-origins=*");
+//                    driver = new ChromeDriver(options);
+//                    break;
+//                default:
+//                    throw new IllegalArgumentException("Unsupported browser: " + browser);
+//            }
+//        }
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
@@ -103,8 +102,7 @@ public abstract class BaseTest {
         driver.manage().window().setSize(new Dimension(1440, 1080));
         LoggerUtil.info(String.format("Open browser: %s", browser));
 
-//        driver.get(config.getBaseUrl());
-        driver.get("https://www.ae.com/us/en");
+        driver.get(config.getBaseUrl());
 
         LoggerUtil.info(String.format("Run %s.%s", this.getClass().getName(), method.getName()));
     }

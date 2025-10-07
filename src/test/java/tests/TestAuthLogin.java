@@ -1,24 +1,19 @@
 package tests;
 
 import io.qameta.allure.*;
-import io.qameta.allure.testng.Tag;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import pages.DashboardPage;
+import pages.LoginPage;
 import utils.BaseTest;
-
-import static io.qameta.allure.SeverityLevel.CRITICAL;
 
 public class TestAuthLogin extends BaseTest {
 
     @Test
-    @Description("При клике по иконке 'Search' появляется окно 'Search'")
-    @Severity(CRITICAL)
-    @Tag("Smoke")
-    public void testSearchIcon() {
-
-        getDriver().findElement(By.name("search-cta")).click();
-
+    public void startTest() {
+        String text = getDriver().findElement(By.xpath("//h2")).getText();
+        Assert.assertEquals(text, "Вход");
     }
 
 //    @Test
