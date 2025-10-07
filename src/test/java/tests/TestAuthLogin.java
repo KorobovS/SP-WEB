@@ -48,21 +48,21 @@ public class TestAuthLogin extends BaseTest {
         Assert.assertEquals(loginPage.getValueToFieldPassword(), password);
     }
 
-//    @Test
-//    @Epic("Авторизация и аутентификация")
-//    @Feature("Вход с пустыми полями логина и пароля")
-//    @Severity(SeverityLevel.BLOCKER)
-//    @Link("https://team-b9fb.testit.software/projects/1/tests/9")
-//    public void testLoginWithEmptyUsernameAndPassword() {
-//
-//        LoginPage loginPage = new LoginPage(getDriver())
-//                .clickToFieldLogin()
-//                .clickToFieldPassword()
-//                .clickButtonLoginWithHelper();
-//
-//        Allure.step("Страница не обновилась, на полях появились подсказки");
-//        Assert.assertEquals(loginPage.getCurrentUrl(), String.format("%s/login", getConfig().getBaseUrl()));
-//        Assert.assertEquals(loginPage.getHelperTextLogin(), "Поле Логин обязательно для заполнения");
-//        Assert.assertEquals(loginPage.getHelperTextPassword(), "Поле Пароль обязательно для заполнения");
-//    }
+    @Test
+    @Epic("Авторизация и аутентификация")
+    @Feature("Вход с пустыми полями логина и пароля")
+    @Severity(SeverityLevel.BLOCKER)
+    @Link("https://team-b9fb.testit.software/projects/1/tests/9")
+    public void testLoginWithEmptyUsernameAndPassword() {
+
+        LoginPage loginPage = new LoginPage(getDriver())
+                .clickToFieldLogin()
+                .clickToFieldPassword()
+                .clickButtonLoginWithHelper();
+
+        Allure.step("Страница не обновилась, на полях появились подсказки");
+        Assert.assertEquals(loginPage.getCurrentUrl(), String.format("%s/login", getConfig().getBaseUrl()));
+        Assert.assertEquals(loginPage.getHelperTextLogin(), "Поле Логин обязательно для заполнения");
+        Assert.assertEquals(loginPage.getHelperTextPassword(), "Поле Пароль обязательно для заполнения");
+    }
 }
