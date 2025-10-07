@@ -37,6 +37,7 @@ jobs:
 
       - name: Create properties file
         run: |
+          mkdir -p src/test/resources
           cat > src/test/resources/demo.properties << EOF
           baseUrl=https://web.staging.diatechnic.ru/login
           userName=user_name
