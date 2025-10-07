@@ -42,7 +42,7 @@ public class ProjectUtils {
             Allure.addAttachment("Local run", "No remote driver");
             chromeOptions.addArguments("--window-size=1920,1080");
             driver = new ChromeDriver(chromeOptions);
-            driver.get(config.getBaseUrl());
+//            driver.get(config.getBaseUrl());
         }
 
         return driver;
