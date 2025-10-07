@@ -106,10 +106,10 @@ public abstract class BaseTest {
     protected void beforeMethod(Method method) {
         startDriver();
 
-//        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-//        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-//
-//        driver.manage().window().setSize(new Dimension(1440, 1080));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+
+        driver.manage().window().setSize(new Dimension(1440, 1080));
 
         driver.get("https://web.staging.diatechnic.ru/login");
 
