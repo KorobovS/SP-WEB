@@ -37,7 +37,7 @@ jobs:
 
       - name: Create properties file
         run: |
-          cat > src/test/resources/demo.properties << EOF
+          cat > /home/runner/work/sp-web/sp-web/src/test/resources/demo.properties << EOF
           baseUrl=https://web.staging.diatechnic.ru/login
           userName=user_name
           password=password
