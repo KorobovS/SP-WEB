@@ -50,10 +50,9 @@ public abstract class BaseTest {
         LoggerUtil.info("Driver NULL");
     }
 
- //   @Parameters("browser")
+    @Parameters("browser")
     @BeforeMethod
-//    protected void beforeMethod(Method method, @Optional("yandex") String browser) {
-    protected void beforeMethod(Method method) {
+    protected void beforeMethod(Method method, @Optional("yandex") String browser) {
 
         getDriver();
 
