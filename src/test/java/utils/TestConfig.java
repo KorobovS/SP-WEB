@@ -17,12 +17,19 @@ public class TestConfig {
     }
 
     public String getBaseUrl() {
-        String baseUrl = properties.getProperty("baseUrl");
-        assertNotNull(baseUrl, String.format("BaseUrl is not found in %s.properties", env));
+        String url = System.getenv("BASE_URL");
 
-        LoggerUtil.info(String.format("Received baseUrl for the environment: %s", env));
+        if (url != null) {
+            return url;
+        } else {
 
-        return baseUrl;
+            String baseUrl = properties.getProperty("baseUrl");
+            assertNotNull(baseUrl, String.format("BaseUrl is not found in %s.properties", env));
+
+            LoggerUtil.info(String.format("Received baseUrl for the environment: %s", env));
+
+            return baseUrl;
+        }
     }
 
     public String getUserName() {

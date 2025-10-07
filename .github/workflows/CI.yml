@@ -35,17 +35,18 @@ jobs:
           distribution: 'corretto'
           cache: 'maven'
 
-      - name: Create properties file
-        run: |
-          cat > src/test/resources/demo.properties << EOF
-          baseUrl=https://web.staging.diatechnic.ru/login
-          userName=user_name
-          password=password
-          EOF
+#      - name: Create properties file
+#        run: |
+#          cat > /home/runner/work/sp-web/sp-web/src/test/resources/demo.properties << EOF
+#          baseUrl=https://web.staging.diatechnic.ru/login
+#          userName=user_name
+#          password=password
+#          EOF
 
       - name: Maven test
         env:
           SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
+          BASE_URL: $ {{ secrets.BASE_URL }}
         run: mvn clean test -Dbrowser=chrome
 
       - name: Get Allure history
