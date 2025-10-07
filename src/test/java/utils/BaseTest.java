@@ -1,10 +1,7 @@
 package utils;
 
 import io.qameta.allure.Allure;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -53,10 +50,9 @@ public abstract class BaseTest {
         LoggerUtil.info("Driver NULL");
     }
 
-//    @Parameters("browser")
+    @Parameters("browser")
     @BeforeMethod
-//    protected void beforeMethod(Method method, @Optional("yandex") String browser) {
-    protected void beforeMethod(Method method) {
+    protected void beforeMethod(Method method, @Optional("yandex") String browser) {
 
         ChromeOptions options = new ChromeOptions();
         String remoteUrl = System.getenv("SELENIUM_REMOTE_URL");
@@ -69,6 +65,7 @@ public abstract class BaseTest {
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
             options.setCapability("goog:loggingPrefs", Map.of("browser", "ALL"));
+            options.setPageLoadStrategy(PageLoadStrategy.EAGER);
             try {
                 driver = new RemoteWebDriver(new URL(remoteUrl), options);
             } catch (MalformedURLException e) {
@@ -78,8 +75,7 @@ public abstract class BaseTest {
 
             LoggerUtil.info("Local run");
 
-//            switch (browser.toLowerCase()) {
-            switch ("browser".toLowerCase()) {
+            switch (browser.toLowerCase()) {
                 case "chrome":
                     driver = new ChromeDriver();
                     break;
@@ -97,8 +93,7 @@ public abstract class BaseTest {
                     driver = new ChromeDriver(options);
                     break;
                 default:
-//                    throw new IllegalArgumentException("Unsupported browser: " + browser);
-                    throw new IllegalArgumentException("Unsupported browser: ");
+                    throw new IllegalArgumentException("Unsupported browser: " + browser);
             }
         }
 
@@ -106,9 +101,10 @@ public abstract class BaseTest {
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
 
         driver.manage().window().setSize(new Dimension(1440, 1080));
-//        LoggerUtil.info(String.format("Open browser: %s", browser));
+        LoggerUtil.info(String.format("Open browser: %s", browser));
 
-        driver.get(config.getBaseUrl());
+//        driver.get(config.getBaseUrl());
+        driver.get("https://www.ae.com/us/en");
 
         LoggerUtil.info(String.format("Run %s.%s", this.getClass().getName(), method.getName()));
     }
