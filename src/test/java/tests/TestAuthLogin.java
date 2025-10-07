@@ -1,41 +1,24 @@
 package tests;
 
 import io.qameta.allure.*;
+import io.qameta.allure.testng.Tag;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import pages.DashboardPage;
-import pages.LoginPage;
 import utils.BaseTest;
+
+import static io.qameta.allure.SeverityLevel.CRITICAL;
 
 public class TestAuthLogin extends BaseTest {
 
     @Test
-    void testSuccessfulLogin() {
-        driver.get(baseUrl + "/login");
+    @Description("При клике по иконке 'Search' появляется окно 'Search'")
+    @Severity(CRITICAL)
+    @Tag("Smoke")
+    public void testSearchIcon() {
 
-        WebElement username = driver.findElement(By.id("username"));
-        WebElement password = driver.findElement(By.id("password"));
-        WebElement loginButton = driver.findElement(By.id("login-btn"));
+        getDriver().findElement(By.name("search-cta")).click();
 
-        username.sendKeys("testuser");
-        password.sendKeys("password");
-        loginButton.click();
-
-        WebElement welcomeMessage = driver.findElement(By.id("welcome"));
-        Assert.assertTrue(welcomeMessage.isDisplayed());
-    }
-
-    @Test
-    void testLoginFailure() {
-        driver.get(baseUrl + "/login");
-
-        // ... test code
-
-        if (driver.findElements(By.className("error")).size() > 0) {
-            takeScreenshot("testLoginFailure");
-        }
     }
 
 //    @Test

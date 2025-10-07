@@ -1,190 +1,134 @@
 package utils;
 
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import io.qameta.allure.Allure;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
+import java.util.Map;
+import java.util.Objects;
 
-public class BaseTest {
-    protected WebDriver driver;
-    protected String baseUrl = System.getProperty("test.base.url", "https://example.com");
+public abstract class BaseTest {
 
+    private WebDriver driver;
+    private final TestConfig config = new TestConfig();
+
+    protected WebDriver getDriver() {
+
+        LoggerUtil.info("Driver received");
+
+        return driver;
+    }
+
+    protected TestConfig getConfig() {
+
+        LoggerUtil.info("Configuration received");
+
+        return config;
+    }
+
+    private void closeDriver() {
+
+        if (driver != null) {
+            driver.quit();
+            driver = null;
+            LoggerUtil.info("Driver quit");
+        }
+
+        LoggerUtil.info("Driver NULL");
+    }
+
+    @Parameters("browser")
     @BeforeMethod
-    public void setUp() {
-        String browser = System.getProperty("selenium.browser", "chrome");
-        boolean headless = Boolean.parseBoolean(System.getProperty("selenium.headless", "true"));
+    protected void beforeMethod(Method method, @Optional("yandex") String browser) {
 
-        if ("chrome".equals(browser)) {
-            ChromeOptions options = new ChromeOptions();
-            if (headless) {
-                options.addArguments("--headless");
-            }
+        ChromeOptions options = new ChromeOptions();
+        String remoteUrl = System.getenv("SELENIUM_REMOTE_URL");
+
+        if (remoteUrl != null) {
+            LoggerUtil.info(String.format("SELENIUM_REMOTE_URL = %s", remoteUrl));
+            Allure.addAttachment("RemoteUrl", remoteUrl);
+            options.addArguments("--headless");
+            options.addArguments("--disable-gpu");
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
-            options.addArguments("--window-size=1920,1080");
-            driver = new ChromeDriver(options);
-        } else if ("firefox".equals(browser)) {
-            FirefoxOptions options = new FirefoxOptions();
-            if (headless) {
-                options.addArguments("--headless");
+            options.setCapability("goog:loggingPrefs", Map.of("browser", "ALL"));
+            options.setPageLoadStrategy(PageLoadStrategy.EAGER);
+            try {
+                driver = new RemoteWebDriver(new URL(remoteUrl), options);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("Malformed URL for Selenium Remote WebDriver", e);
             }
-            driver = new FirefoxDriver(options);
+        } else {
+
+            LoggerUtil.info("Local run");
+
+            switch (browser.toLowerCase()) {
+                case "chrome":
+                    driver = new ChromeDriver();
+                    break;
+                case "edge":
+                    driver = new EdgeDriver();
+                    break;
+                case "yandex":
+                    System.setProperty("webdriver.chrome.driver", "driver/yandexdriver-25.8.0.1872-win64/yandexdriver.exe");
+                    options.addArguments("--disable-extensions");
+                    options.addArguments("--disable-notifications");
+                    options.addArguments("--disable-gpu");
+                    options.addArguments("--no-sandbox");
+                    options.addArguments("--disable-dev-shm-usage");
+                    options.addArguments("--remote-allow-origins=*");
+                    driver = new ChromeDriver(options);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unsupported browser: " + browser);
+            }
         }
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+
+        driver.manage().window().setSize(new Dimension(1440, 1080));
+        LoggerUtil.info(String.format("Open browser: %s", browser));
+
+//        driver.get(config.getBaseUrl());
+        driver.get("https://www.ae.com/us/en");
+
+        LoggerUtil.info(String.format("Run %s.%s", this.getClass().getName(), method.getName()));
     }
 
     @AfterMethod
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
-    }
+    protected void afterMethod(Method method, ITestResult testResult) {
+        if (!testResult.isSuccess()) {
+            Allure.addAttachment(
+                    "screenshot.png",
+                    "image/png",
+                    new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)),
+                    "png");
 
-    protected void takeScreenshot(String testName) {
-        try {
-            File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-//            FileUtils.copyFile(screenshot, new File("target/screenshots/" + testName + ".png"));
-        } catch (Exception e) {
-            e.printStackTrace();
+            Allure.addAttachment(
+                    "Page HTML",
+                    "text/html",
+                    Objects.requireNonNull(driver.getPageSource()),
+                    ".html");
+
+            LoggerUtil.error(String.format("Crashed with an error %s.%s", this.getClass().getName(), method.getName()));
         }
+
+        closeDriver();
+
+        LoggerUtil.info(String.format("Execution time is %.3f sec%n", (testResult.getEndMillis() - testResult.getStartMillis()) / 1000.0));
     }
 }
-
-//package utils;
-//
-//import io.qameta.allure.Allure;
-//import org.openqa.selenium.*;
-//import org.openqa.selenium.chrome.ChromeDriver;
-//import org.openqa.selenium.chrome.ChromeOptions;
-//import org.openqa.selenium.edge.EdgeDriver;
-//import org.openqa.selenium.remote.RemoteWebDriver;
-//import org.testng.ITestResult;
-//import org.testng.annotations.AfterMethod;
-//import org.testng.annotations.BeforeMethod;
-//import org.testng.annotations.Optional;
-//import org.testng.annotations.Parameters;
-//
-//import java.io.ByteArrayInputStream;
-//import java.lang.reflect.Method;
-//import java.net.MalformedURLException;
-//import java.net.URL;
-//import java.time.Duration;
-//import java.util.Map;
-//import java.util.Objects;
-//
-//public abstract class BaseTest {
-//
-//    private WebDriver driver;
-//    private final TestConfig config = new TestConfig();
-//
-//    protected WebDriver getDriver() {
-//
-//        LoggerUtil.info("Driver received");
-//
-//        return driver;
-//    }
-//
-//    protected TestConfig getConfig() {
-//
-//        LoggerUtil.info("Configuration received");
-//
-//        return config;
-//    }
-//
-//    private void closeDriver() {
-//
-//        if (driver != null) {
-//            driver.quit();
-//            driver = null;
-//            LoggerUtil.info("Driver quit");
-//        }
-//
-//        LoggerUtil.info("Driver NULL");
-//    }
-//
-//    @Parameters("browser")
-//    @BeforeMethod
-//    protected void beforeMethod(Method method, @Optional("yandex") String browser) {
-//
-//        String remoteUrl = System.getenv("SELENIUM_REMOTE_URL");
-//
-//        if (remoteUrl != null) {
-//            LoggerUtil.info(String.format("SELENIUM_REMOTE_URL = %s", remoteUrl));
-//
-//            ChromeOptions chromeOptions = new ChromeOptions();
-//            Allure.addAttachment("RemoteUrl", remoteUrl);
-//            chromeOptions.addArguments("--headless");
-//            chromeOptions.addArguments("--disable-gpu");
-//            chromeOptions.addArguments("--no-sandbox");
-//            chromeOptions.addArguments("--disable-dev-shm-usage");
-//            chromeOptions.addArguments("--window-size=1920,1080");
-//            chromeOptions.setCapability("goog:loggingPrefs", Map.of("browser", "ALL"));
-//            try {
-//                driver = new RemoteWebDriver(new URL(remoteUrl), chromeOptions);
-//            } catch (MalformedURLException e) {
-//                throw new RuntimeException("Malformed URL for Selenium Remote WebDriver", e);
-//            }
-//        } else {
-//            LoggerUtil.info("Local run");
-//
-//            switch (browser.toLowerCase()) {
-//                case "chrome":
-//                    driver = new ChromeDriver();
-//                    break;
-//                case "edge":
-//                    driver = new EdgeDriver();
-//                    break;
-//                case "yandex":
-//                    System.setProperty("webdriver.chrome.driver", "driver/yandexdriver-25.8.0.1872-win64/yandexdriver.exe");
-//                    ChromeOptions options = new ChromeOptions();
-//                    options.addArguments("--disable-notifications");
-//                    options.addArguments("--remote-allow-origins=*");
-//                    driver = new ChromeDriver(options);
-//                    break;
-//                default:
-//                    throw new IllegalArgumentException("Unsupported browser: " + browser);
-//            }
-//        }
-//
-//        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-//        driver.manage().window().setSize(new Dimension(1440, 1080));
-//        LoggerUtil.info(String.format("Open browser: %s", browser));
-//
-//        driver.get(config.getBaseUrl());
-//
-//        LoggerUtil.info(String.format("Run %s.%s", this.getClass().getName(), method.getName()));
-//    }
-//
-//    @AfterMethod
-//    protected void afterMethod(Method method, ITestResult testResult) {
-//        if (!testResult.isSuccess()) {
-//            Allure.addAttachment(
-//                    "screenshot.png",
-//                    "image/png",
-//                    new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)),
-//                    "png");
-//
-//            Allure.addAttachment(
-//                    "Page HTML",
-//                    "text/html",
-//                    Objects.requireNonNull(driver.getPageSource()),
-//                    ".html");
-//
-//            LoggerUtil.error(String.format("Crashed with an error %s.%s", this.getClass().getName(), method.getName()));
-//        }
-//
-//        closeDriver();
-//
-//        LoggerUtil.info(String.format("Execution time is %.3f sec%n", (testResult.getEndMillis() - testResult.getStartMillis()) / 1000.0));
-//    }
-//}
