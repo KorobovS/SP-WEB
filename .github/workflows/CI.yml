@@ -39,9 +39,9 @@ jobs:
         run: |
           mkdir -p src/test/resources
           cat > src/test/resources/demo.properties << EOF
-          baseUrl=https://web.staging.diatechnic.ru/login
-          userName=user_name
-          password=password
+          baseUrl=${{ secrets.BASE_URL }}
+          userName=${{ secrets.USER_NAME }}
+          password=${{ secrets.PASSWORD }}
           EOF
 
       - name: Maven test
