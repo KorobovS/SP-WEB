@@ -65,7 +65,6 @@ public abstract class BaseTest {
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
             options.setCapability("goog:loggingPrefs", Map.of("browser", "ALL"));
-            options.setPageLoadStrategy(PageLoadStrategy.EAGER);
             try {
                 driver = new RemoteWebDriver(new URL(remoteUrl), options);
             } catch (MalformedURLException e) {
@@ -103,8 +102,7 @@ public abstract class BaseTest {
         driver.manage().window().setSize(new Dimension(1440, 1080));
         LoggerUtil.info(String.format("Open browser: %s", browser));
 
-//        driver.get(config.getBaseUrl());
-        driver.get("https://www.ae.com/us/en");
+        driver.get(config.getBaseUrl());
 
         LoggerUtil.info(String.format("Run %s.%s", this.getClass().getName(), method.getName()));
     }
