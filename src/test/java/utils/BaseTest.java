@@ -54,6 +54,8 @@ public abstract class BaseTest {
     @BeforeMethod
     protected void beforeMethod(Method method, @Optional("yandex") String browser) {
 
+        getDriver();
+
         ChromeOptions options = new ChromeOptions();
         String remoteUrl = System.getenv("SELENIUM_REMOTE_URL");
 
@@ -102,7 +104,7 @@ public abstract class BaseTest {
         driver.manage().window().setSize(new Dimension(1440, 1080));
         LoggerUtil.info(String.format("Open browser: %s", browser));
 
-        driver.get("https://web.staging.diatechnic.ru/login");
+        driver.get(config.getBaseUrl());
 
         LoggerUtil.info(String.format("Run %s.%s", this.getClass().getName(), method.getName()));
     }
