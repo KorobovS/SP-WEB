@@ -10,25 +10,25 @@ import utils.BaseTest;
 
 public class TestAuthLogin extends BaseTest {
 
-//    @Test
-//    @Epic("Авторизация и аутентификация")
-//    @Feature("Вход с валидными логином и паролем")
-//    @Severity(SeverityLevel.NORMAL)
-//    @Link("https://team-b9fb.testit.software/projects/1/tests/8")
-//    public void testLoginWithValidUsernameAndPassword() throws InterruptedException {
-//
-//        String login = getConfig().getUserName();
-//        String password = getConfig().getPassword();
-//
-//        DashboardPage dashboardPage = new LoginPage(getDriver())
-//                .addValueToFieldLogin(login)
-//                .addValueToFieldPassword(password)
-//                .clickButtonLogin();
-//
-//        Allure.step("Загрузилась сатраница Дашборд");
-//        Thread.sleep(1000);
-//        Assert.assertTrue(dashboardPage.getCurrentUrl().contains(String.format("%s/dashboard", getConfig().getBaseUrl())));
-//    }
+    @Test
+    @Epic("Авторизация и аутентификация")
+    @Feature("Вход с валидными логином и паролем")
+    @Severity(SeverityLevel.NORMAL)
+    @Link("https://team-b9fb.testit.software/projects/1/tests/8")
+    public void testLoginWithValidUsernameAndPassword() throws InterruptedException {
+
+        String login = getConfig().getUserName();
+        String password = getConfig().getPassword();
+
+        DashboardPage dashboardPage = new LoginPage(getDriver())
+                .addValueToFieldLogin(login)
+                .addValueToFieldPassword(password)
+                .clickButtonLogin();
+
+        Allure.step("Загрузилась сатраница Дашборд");
+        Thread.sleep(1000);
+        Assert.assertTrue(dashboardPage.getCurrentUrl().contains(String.format("%s/dashboard", getConfig().getBaseUrl())));
+    }
 
     @Test
     @Epic("Авторизация и аутентификация")
@@ -61,7 +61,7 @@ public class TestAuthLogin extends BaseTest {
                 .clickButtonLoginWithHelper();
 
         Allure.step("Страница не обновилась, на полях появились подсказки");
-//        Assert.assertEquals(loginPage.getCurrentUrl(), String.format("%s/login", getConfig().getBaseUrl()));
+        Assert.assertEquals(loginPage.getCurrentUrl(), String.format("%s/login", getConfig().getBaseUrl()));
         Assert.assertEquals(loginPage.getHelperTextLogin(), "Поле Логин обязательно для заполнения");
         Assert.assertEquals(loginPage.getHelperTextPassword(), "Поле Пароль обязательно для заполнения");
     }
