@@ -19,7 +19,7 @@ import java.util.Objects;
 public abstract class BaseTest {
 
     private WebDriver driver;
-    private final TestConfig config = new TestConfig();
+//    private final TestConfig config = new TestConfig();
 
     protected WebDriver getDriver() {
 
@@ -28,12 +28,12 @@ public abstract class BaseTest {
         return driver;
     }
 
-    protected TestConfig getConfig() {
-
-        LoggerUtil.info("Configuration received");
-
-        return config;
-    }
+//    protected TestConfig getConfig() {
+//
+//        LoggerUtil.info("Configuration received");
+//
+//        return config;
+//    }
 
     private void startDriver() {
         LoggerUtil.info("Открываю браузер");
@@ -100,17 +100,18 @@ public abstract class BaseTest {
         LoggerUtil.info("Driver NULL");
     }
 
-    @Parameters("browser")
+//    @Parameters("browser")
     @BeforeMethod
-    protected void beforeMethod(Method method, @Optional("yandex") String browser) {
+//    protected void beforeMethod(Method method, @Optional("yandex") String browser) {
+    protected void beforeMethod(Method method) {
         startDriver();
 
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+//        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+//        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+//
+//        driver.manage().window().setSize(new Dimension(1440, 1080));
 
-        driver.manage().window().setSize(new Dimension(1440, 1080));
-
-        driver.get(config.getBaseUrl());
+        driver.get("https://web.staging.diatechnic.ru/login");
 
         LoggerUtil.info(String.format("Run %s.%s", this.getClass().getName(), method.getName()));
     }

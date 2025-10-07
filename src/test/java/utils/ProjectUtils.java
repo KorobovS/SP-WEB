@@ -37,7 +37,6 @@ public class ProjectUtils {
             LoggerUtil.info("Local run");
             Allure.addAttachment("Local run", "No remote driver");
             chromeOptions.addArguments("--window-size=1920,1080");
-            chromeOptions.setPageLoadStrategy(PageLoadStrategy.EAGER);
             driver = new ChromeDriver(chromeOptions);
         }
 
