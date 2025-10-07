@@ -10,12 +10,6 @@ import utils.BaseTest;
 
 public class TestAuthLogin extends BaseTest {
 
-    @Test
-    public void startTest() {
-        String text = getDriver().findElement(By.xpath("//h2")).getText();
-        Assert.assertEquals(text, "Вход");
-    }
-
 //    @Test
 //    @Epic("Авторизация и аутентификация")
 //    @Feature("Вход с валидными логином и паролем")
@@ -35,25 +29,25 @@ public class TestAuthLogin extends BaseTest {
 //        Thread.sleep(1000);
 //        Assert.assertTrue(dashboardPage.getCurrentUrl().contains(String.format("%s/dashboard", getConfig().getBaseUrl())));
 //    }
-//
-//    @Test
-//    @Epic("Авторизация и аутентификация")
-//    @Feature("Введенные данные сохраняются в значение поля")
-//    @Severity(SeverityLevel.NORMAL)
-//    @Link("https://team-b9fb.testit.software/projects/1/tests/8")
-//    public void testEnteredDataSavedFieldValue() {
-//
-//        String login = "test login";
-//        String password = "test password";
-//
-//        LoginPage loginPage = new LoginPage(getDriver())
-//                .addValueToFieldLogin(login)
-//                .addValueToFieldPassword(password);
-//
-//        Assert.assertEquals(loginPage.getValueToFieldLogin(), login);
-//        Assert.assertEquals(loginPage.getValueToFieldPassword(), password);
-//    }
-//
+
+    @Test
+    @Epic("Авторизация и аутентификация")
+    @Feature("Введенные данные сохраняются в значение поля")
+    @Severity(SeverityLevel.NORMAL)
+    @Link("https://team-b9fb.testit.software/projects/1/tests/8")
+    public void testEnteredDataSavedFieldValue() {
+
+        String login = "test login";
+        String password = "test password";
+
+        LoginPage loginPage = new LoginPage(getDriver())
+                .addValueToFieldLogin(login)
+                .addValueToFieldPassword(password);
+
+        Assert.assertEquals(loginPage.getValueToFieldLogin(), login);
+        Assert.assertEquals(loginPage.getValueToFieldPassword(), password);
+    }
+
 //    @Test
 //    @Epic("Авторизация и аутентификация")
 //    @Feature("Вход с пустыми полями логина и пароля")
