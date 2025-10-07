@@ -111,7 +111,7 @@ public abstract class BaseTest {
 
         driver.manage().window().setSize(new Dimension(1440, 1080));
 
-        driver.get(config.getBaseUrl());
+        driver.get("https://web.staging.diatechnic.ru/login");
 
         LoggerUtil.info(String.format("Run %s.%s", this.getClass().getName(), method.getName()));
     }

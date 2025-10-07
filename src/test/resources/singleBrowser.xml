@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<suite name="Мультибраузерное тестирование">
+<suite name="Тестирование в единственном браузере">
 
     <test name="Браузер">
         <classes>
